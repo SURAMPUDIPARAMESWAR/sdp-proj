@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useForm } from '../../hooks/useForm'
@@ -13,6 +13,22 @@ function Login() {
   const [loading, setLoading] = useState(false)
   const [selectedRole, setSelectedRole] = useState('student')
   const [roleError, setRoleError] = useState('')
+
+  // numeric CAPTCHA state
+  const [captchaCode, setCaptchaCode] = useState('')
+  const [captchaInput, setCaptchaInput] = useState('')
+  const [captchaError, setCaptchaError] = useState('')
+
+  // generate a 5-digit numeric captcha
+  const generateCaptcha = () => {
+    const code = Math.floor(10000 + Math.random() * 90000).toString()
+    setCaptchaCode(code)
+    setCaptchaInput('')
+  }
+
+  useEffect(() => {
+    generateCaptcha()
+  }, [])
 
   // Demo credentials mapped by role
   const demoCredentials = {
@@ -37,12 +53,26 @@ function Login() {
 
   const handleSubmit = async (values) => {
     setRoleError('')
-    
+    setCaptchaError('')
+
+    // CAPTCHA check
+    if (!captchaInput.trim()) {
+      setCaptchaError('❌ Please enter the CAPTCHA code.')
+      return
+    }
+    if (captchaInput.trim() !== captchaCode) {
+      setCaptchaError('❌ CAPTCHA does not match. Please try again.')
+      generateCaptcha()
+      return
+    }
+
     // Check if selected role credentials match
     const selectedCredentials = demoCredentials[selectedRole]
-    
+
     if (values.email !== selectedCredentials.email) {
-      setRoleError(`❌ This email is not associated with the ${selectedRole} role. Use ${selectedCredentials.email}`)
+      setRoleError(
+        `❌ This email is not associated with the ${selectedRole} role. Use ${selectedCredentials.email}`
+      )
       return
     }
 
@@ -54,10 +84,12 @@ function Login() {
     setLoading(true)
     try {
       const result = await authService.login(values.email, values.password)
-      
+
       // Verify that the returned role matches selected role
       if (result.user.role !== selectedRole) {
-        setRoleError(`❌ Role mismatch. Expected ${selectedRole} but got ${result.user.role}`)
+        setRoleError(
+          `❌ Role mismatch. Expected ${selectedRole} but got ${result.user.role}`
+        )
         setLoading(false)
         return
       }
@@ -67,16 +99,14 @@ function Login() {
         navigate(`/${result.user.role}`)
       }, 500)
     } catch (error) {
-      setRoleError(`❌ Login failed: ${error.message || 'Invalid credentials'}`)
+      setRoleError(
+        `❌ Login failed: ${error.message || 'Invalid credentials'}`
+      )
       setLoading(false)
     }
   }
 
-  const form = useForm(
-    { email: '', password: '' },
-    handleSubmit,
-    validate
-  )
+  const form = useForm({ email: '', password: '' }, handleSubmit, validate)
 
   return (
     <>
@@ -93,10 +123,10 @@ function Login() {
             </div>
           )}
 
-          {roleError && (
-            <div className="alert alert-error">
-              {roleError}
-            </div>
+          {roleError && <div className="alert alert-error">{roleError}</div>}
+
+          {captchaError && (
+            <div className="alert alert-error">{captchaError}</div>
           )}
 
           <form onSubmit={form.handleSubmit}>
@@ -113,14 +143,18 @@ function Login() {
                 }}
                 className="form-input form-select"
               >
-                {roles.map(role => (
+                {roles.map((role) => (
                   <option key={role.value} value={role.value}>
                     {role.label}
                   </option>
                 ))}
               </select>
               <div className="role-hint">
-                💡 Selected role: <strong>{selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}</strong>
+                💡 Selected role:{' '}
+                <strong>
+                  {selectedRole.charAt(0).toUpperCase() +
+                    selectedRole.slice(1)}
+                </strong>
               </div>
             </div>
 
@@ -134,7 +168,9 @@ function Login() {
                 value={form.values.email}
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
-                className={`form-input ${form.touched.email && form.errors.email ? 'error' : ''}`}
+                className={`form-input ${
+                  form.touched.email && form.errors.email ? 'error' : ''
+                }`}
                 placeholder={`e.g., ${demoCredentials[selectedRole].email}`}
                 disabled={form.isSubmitting || loading}
               />
@@ -153,13 +189,80 @@ function Login() {
                 value={form.values.password}
                 onChange={form.handleChange}
                 onBlur={form.handleBlur}
-                className={`form-input ${form.touched.password && form.errors.password ? 'error' : ''}`}
+                className={`form-input ${
+                  form.touched.password && form.errors.password ? 'error' : ''
+                }`}
                 placeholder="Enter your password"
                 disabled={form.isSubmitting || loading}
               />
               {form.touched.password && form.errors.password && (
                 <span className="form-error">❌ {form.errors.password}</span>
               )}
+            </div>
+
+            {/* Numeric CAPTCHA */}
+            <div
+              className="form-group"
+              style={{
+                marginTop: '0.75rem',
+                padding: '10px 12px',
+                borderRadius: '8px',
+                background: '#f5f7fa',
+                border: '1px solid #d0d5e0'
+              }}
+            >
+              <label style={{ fontWeight: 'bold', display: 'block' }}>
+                CAPTCHA Verification
+              </label>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginTop: '6px',
+                  marginBottom: '6px'
+                }}
+              >
+                <div
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '6px',
+                    background:
+                      'linear-gradient(90deg, #2979ff, #4f8bff)',
+                    color: '#fff',
+                    fontWeight: 'bold',
+                    letterSpacing: '2px',
+                    fontSize: '1.1rem'
+                  }}
+                >
+                  {captchaCode}
+                </div>
+                <button
+                  type="button"
+                  onClick={generateCaptcha}
+                  style={{
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#2979ff',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    textDecoration: 'underline'
+                  }}
+                  disabled={form.isSubmitting || loading}
+                >
+                  Refresh
+                </button>
+              </div>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={captchaInput}
+                onChange={(e) => setCaptchaInput(e.target.value)}
+                placeholder="Enter the code shown above"
+                className="form-input"
+                disabled={form.isSubmitting || loading}
+              />
             </div>
 
             {/* Login Button */}
@@ -184,7 +287,10 @@ function Login() {
 
           {/* Demo Credentials - Dynamic based on selected role */}
           <div className="demo-credentials">
-            <h4>📝 Credentials for {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}:</h4>
+            <h4>
+              📝 Credentials for{' '}
+              {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)}:
+            </h4>
             <div className="demo-table">
               <div className="demo-row">
                 <strong>Email:</strong>

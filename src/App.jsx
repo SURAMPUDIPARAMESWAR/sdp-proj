@@ -11,6 +11,8 @@ import StudentDashboard from './components/dashboards/StudentDashboard'
 import TeacherDashboard from './components/dashboards/TeacherDashboard'
 import ParentDashboard from './components/dashboards/ParentDashboard'
 import AdminDashboard from './components/dashboards/AdminDashboard'
+import PaymentsPage from './pages/PaymentsPage'
+import ChatSupportPage from './pages/ChatSupportPage'
 import NotFound from './pages/NotFound'
 import './App.css'
 
@@ -88,6 +90,9 @@ function App() {
 
           {/* 404 Route */}
           <Route path="*" element={<NotFound />} />
+          {/* NEW advanced‑style features */}
+        <Route path="/payments" element={<PaymentsPage />} />
+        <Route path="/chat-support" element={<ChatSupportPage />} />
         </Routes>
       </Router>
     </AuthProvider>
