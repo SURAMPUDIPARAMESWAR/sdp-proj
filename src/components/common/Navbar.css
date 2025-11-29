@@ -1,0 +1,355 @@
+/* ===================================================
+   NAVBAR STYLES - PROFESSIONAL & RESPONSIVE
+   =================================================== */
+
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar-container {
+  max-width: 100%;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+}
+
+/* Logo */
+.navbar-logo {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.navbar-logo:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Menu Toggle Button */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation Menu */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+}
+
+.nav-links,
+.nav-links-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Navigation Links */
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.nav-link.btn-signin {
+  background: white;
+  color: #667eea;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nav-link.btn-signin:hover {
+  background: #f0f4ff;
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+}
+
+/* User Info */
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-icon {
+  font-size: 1.3rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.user-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: block;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  text-transform: capitalize;
+  display: block;
+}
+
+/* Logout Button */
+.btn-logout {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.btn-logout:hover {
+  background: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.btn-logout:active {
+  transform: translateY(0);
+}
+
+/* ===================================================
+   RESPONSIVE DESIGN
+   =================================================== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 1.5rem;
+  }
+
+  .navbar-logo {
+    font-size: 1.2rem;
+  }
+
+  .nav-link {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
+  .btn-logout {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem;
+    height: 55px;
+  }
+
+  .navbar-logo {
+    font-size: 1rem;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .navbar-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 0 0 0 8px;
+    min-width: 220px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    display: none;
+  }
+
+  .navbar-menu.active {
+    display: flex;
+  }
+
+  .nav-links,
+  .nav-links-dashboard {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    justify-content: flex-start;
+  }
+
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .nav-link.btn-signin {
+    background: #667eea;
+    color: white;
+    border: 1px solid white;
+    justify-content: center;
+  }
+
+  .nav-link.btn-signin:hover {
+    background: white;
+    color: #667eea;
+  }
+
+  .navbar-user {
+    width: 100%;
+    padding: 0.8rem;
+    justify-content: space-between;
+  }
+
+  .btn-logout {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 0.8rem;
+    height: 50px;
+  }
+
+  .navbar-logo {
+    font-size: 0.9rem;
+  }
+
+  .menu-toggle {
+    font-size: 1.3rem;
+  }
+
+  .navbar-menu {
+    top: 50px;
+    min-width: 200px;
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .btn-logout {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .user-name {
+    font-size: 0.8rem;
+  }
+
+  .user-role {
+    font-size: 0.7rem;
+  }
+}
+
+/* Extra Small */
+@media (max-width: 360px) {
+  .navbar-container {
+    padding: 0 0.5rem;
+  }
+
+  .navbar-logo {
+    font-size: 0.8rem;
+  }
+
+  .navbar-menu {
+    min-width: 180px;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.6rem;
+  }
+}
+
+/* Smooth Transitions */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-logo,
+  .nav-link,
+  .btn-logout {
+    transition: none;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  }
+
+  .navbar-menu {
+    background: rgba(0, 0, 0, 0.98);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .navbar {
+    display: none;
+  }
+}
