@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import { validateEmail, validatePassword } from '../../utils/validators'
 import PublicNavbar from '../common/PublicNavbar'
 import './Signup.css'
 
@@ -26,7 +25,7 @@ export default function Signup() {
   const roles = [
     { value: 'student', label: '👨‍🎓 Student', description: 'Track your grades and progress' },
     { value: 'teacher', label: '👨‍🏫 Teacher', description: 'Manage your classes and students' },
-    { value: 'parent', label: '👨‍👩‍👧 Parent', description: 'Monitor your child\'s performance' },
+    { value: 'parent', label: '👨‍👩‍👧 Parent', description: "Monitor your child's performance" },
     { value: 'admin', label: '⚙️ Administrator', description: 'Manage the entire system' }
   ]
 
@@ -41,34 +40,30 @@ export default function Signup() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
     if (name === 'password') {
       setPasswordStrength(calculatePasswordStrength(value))
     }
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }))
+      setErrors((prev) => ({ ...prev, [name]: '' }))
     }
   }
 
+  // simplified validation: only required + confirm match + terms
   const validateForm = () => {
     const newErrors = {}
+
     if (!formData.name.trim()) {
       newErrors.name = 'Full name is required'
-    } else if (formData.name.length < 3) {
-      newErrors.name = 'Name must be at least 3 characters'
     }
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required'
-    } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
     }
     if (!formData.institutionId.trim()) {
       newErrors.institutionId = 'Institution ID is required'
     }
     if (!formData.password) {
       newErrors.password = 'Password is required'
-    } else if (!validatePassword(formData.password)) {
-      newErrors.password = 'Password must be 8+ characters with uppercase, number, and special character'
     }
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password'
@@ -78,18 +73,18 @@ export default function Signup() {
     if (!agreedToTerms) {
       newErrors.terms = 'You must agree to the terms and conditions'
     }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) {
-      return
-    }
+    if (!validateForm()) return
+
     setLoading(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
       login({
         name: formData.name,
         email: formData.email,
@@ -104,7 +99,10 @@ export default function Signup() {
       }
       navigate(roleRoutes[formData.role])
     } catch (error) {
-      setErrors(prev => ({ ...prev, submit: error.message || 'An error occurred during signup' }))
+      setErrors((prev) => ({
+        ...prev,
+        submit: error.message || 'An error occurred during signup'
+      }))
     } finally {
       setLoading(false)
     }
@@ -225,15 +223,22 @@ export default function Signup() {
                   placeholder="e.g., STU001 or TEA001"
                   className={`form-input ${errors.institutionId ? 'error' : ''}`}
                 />
-                {errors.institutionId && <span className="form-error">{errors.institutionId}</span>}
+                {errors.institutionId && (
+                  <span className="form-error">{errors.institutionId}</span>
+                )}
               </div>
 
               {/* Role Selection */}
               <div className="form-group">
                 <label>Select Your Role *</label>
                 <div className="role-selector">
-                  {roles.map(role => (
-                    <label key={role.value} className={`role-option ${formData.role === role.value ? 'selected' : ''}`}>
+                  {roles.map((role) => (
+                    <label
+                      key={role.value}
+                      className={`role-option ${
+                        formData.role === role.value ? 'selected' : ''
+                      }`}
+                    >
                       <input
                         type="radio"
                         name="role"
@@ -242,7 +247,9 @@ export default function Signup() {
                         onChange={handleInputChange}
                       />
                       <span className="role-label">{role.label}</span>
-                      <span className="role-description">{role.description}</span>
+                      <span className="role-description">
+                        {role.description}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -258,7 +265,7 @@ export default function Signup() {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Create a strong password"
+                    placeholder="Create a password"
                     className={`form-input ${errors.password ? 'error' : ''}`}
                   />
                   <button
@@ -272,33 +279,37 @@ export default function Signup() {
                 </div>
 
                 {formData.password && (
-                  <div className={`password-strength ${
-                    passwordStrength === 1 ? 'weak' : 
-                    passwordStrength === 2 ? 'fair' : 
-                    passwordStrength === 3 ? 'good' : 'strong'
-                  }`}>
-                    {passwordStrength === 1 ? 'Weak' : 
-                     passwordStrength === 2 ? 'Fair' : 
-                     passwordStrength === 3 ? 'Good' : 'Strong'}
+                  <div
+                    className={`password-strength ${
+                      passwordStrength === 1
+                        ? 'weak'
+                        : passwordStrength === 2
+                        ? 'fair'
+                        : passwordStrength === 3
+                        ? 'good'
+                        : 'strong'
+                    }`}
+                  >
+                    {passwordStrength === 1
+                      ? 'Weak'
+                      : passwordStrength === 2
+                      ? 'Fair'
+                      : passwordStrength === 3
+                      ? 'Good'
+                      : 'Strong'}
                   </div>
                 )}
 
                 <ul className="password-requirements">
-                  <li className={formData.password.length >= 8 ? 'met' : ''}>
-                    ✓ At least 8 characters
-                  </li>
-                  <li className={/[a-z]/.test(formData.password) && /[A-Z]/.test(formData.password) ? 'met' : ''}>
-                    ✓ One uppercase & one lowercase
-                  </li>
-                  <li className={/\d/.test(formData.password) ? 'met' : ''}>
-                    ✓ One number
-                  </li>
-                  <li className={/[!@#$%^&*]/.test(formData.password) ? 'met' : ''}>
-                    ✓ One special character (!@#$%^&*)
-                  </li>
+                  <li>✓ At least 8 characters (recommended)</li>
+                  <li>✓ Uppercase & lowercase (recommended)</li>
+                  <li>✓ One number (recommended)</li>
+                  <li>✓ One special character (!@#$%^&*) (recommended)</li>
                 </ul>
 
-                {errors.password && <span className="form-error">{errors.password}</span>}
+                {errors.password && (
+                  <span className="form-error">{errors.password}</span>
+                )}
               </div>
 
               {/* Confirm Password */}
@@ -312,18 +323,26 @@ export default function Signup() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     placeholder="Re-enter your password"
-                    className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
+                    className={`form-input ${
+                      errors.confirmPassword ? 'error' : ''
+                    }`}
                   />
                   <button
                     type="button"
                     className="password-toggle"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    onClick={() =>
+                      setShowConfirmPassword(!showConfirmPassword)
+                    }
+                    title={
+                      showConfirmPassword ? 'Hide password' : 'Show password'
+                    }
                   >
                     {showConfirmPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
-                {errors.confirmPassword && <span className="form-error">{errors.confirmPassword}</span>}
+                {errors.confirmPassword && (
+                  <span className="form-error">{errors.confirmPassword}</span>
+                )}
               </div>
 
               {/* Terms and Conditions */}
@@ -336,12 +355,18 @@ export default function Signup() {
                   />
                   <span>
                     I agree to the{' '}
-                    <a href="#terms" className="terms-link">Terms and Conditions</a>
-                    {' '}and{' '}
-                    <a href="#privacy" className="terms-link">Privacy Policy</a>
+                    <a href="#terms" className="terms-link">
+                      Terms and Conditions
+                    </a>{' '}
+                    and{' '}
+                    <a href="#privacy" className="terms-link">
+                      Privacy Policy
+                    </a>
                   </span>
                 </label>
-                {errors.terms && <span className="form-error">{errors.terms}</span>}
+                {errors.terms && (
+                  <span className="form-error">{errors.terms}</span>
+                )}
               </div>
 
               {/* Submit Button */}
